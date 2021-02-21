@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row row-eq-spacing-lg">
+    <div class="col-lg-8">
+        <div class="content">
+            <h2 class="content-title"><i class="fas fa-file-upload" aria-hidden="true"></i> Upload</h2>
+        </div>
+        <div class="card">
+            <h2 class="card-title">-----</h2>
+
+            <div class="file-loading">
+                <input id="input-fas" name="file" type="file" multiple>
+            </div>
+            <script>
+                $("#input-fas").fileinput({
+                    theme: "fas",
+                    uploadUrl: "{{ url_for('api.upload') }}"
+                }).on('fileuploaded', function (event, data){
+                    console.log(event);
+                    console.log(data.response['url']);
+                    var div = document.getElementById('copy');
+                    div.innerHTML += '<p style="overflow: hidden">'+data.response['url'] + '</p><br>'
+                });
+            </script>
+
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="content">
+            <h2 class="content-title"><i class="fas fa-file-alt" aria-hidden="true"></i> Copy</h2>
+        </div>
+        <div class="card">
+            <h2 class="card-title">Placeholder</h2>
+            <br>
+            <div id="copy"></div>
+            <br/>
+        </div>
+    </div>
+    {% with passed = get_flashed_messages() %}
+    {% if passed %}
+    <script>
+        setTimeout(toastDangerAlert, 100);
+        function toastDangerAlert() {
+            halfmoon.initStickyAlert({
+                content: "{{ passed[0] }}",
+                title: "Alert",
+                alertType: "alert-danger",
+                fillType: "filled"
+            });
+        }
+    </script>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

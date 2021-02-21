@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row row-eq-spacing-lg">
+    <div class="col-lg-3 col-sm-0"></div>
+    <div class="col-lg-6 col-sm-12">
+        <div class="content">
+            <h2 class="content-title"><i class="fas fa-sign-in-alt" aria-hidden="true"></i>  Register</h2>
+        </div>
+        <div class="card">
+            <form action={{ url_for('auth.register') }} method="post" class="w-600 mw-full">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label for="email" class="required">Email</label>
+                    {{ form.email(type='email',
+                    class='form-control',
+                    id='email',
+                    placeholder='Email',
+                    required='required') }}
+                </div>
+                <div class="form-group">
+                    <label for="username" class="required">Username</label>
+                    {{ form.username(type='text',
+                    class='form-control',
+                    id='username',
+                    placeholder='Username',
+                    required='required') }}
+                </div>
+                <div class="form-group">
+                    <label for="password" class="required">Password</label>
+                    {{ form.password(type='password',
+                    class='form-control',
+                    id='password',
+                    placeholder='Password',
+                    required='required') }}
+                </div>
+                <div class="form-group">
+                    <label for="password" class="required">Confirm Password</label>
+                    {{ form.confirm_password(type='password',
+                    class='form-control',
+                    id='password',
+                    placeholder='Confirm Password',
+                    required='required') }}
+                </div>
+                {{ form.submit(class='btn btn-primary btn-block',
+                type='submit',
+                value='Register') }}
+                {% if form.errors %}
+                    {{ form.errors }}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{%  endblock %}

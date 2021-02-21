@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- Favicon and title -->
+    <link rel="icon" href="path/to/fav.png">
+    <title>Template</title>
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/fileinput.min.js"></script>
+    <script src="https://kit.fontawesome.com/6ac82eefdf.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/themes/fas/theme.js"></script>
+    <!-- Halfmoon JS -->
+    <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
+
+
+
+</head>
+<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-set-preferred-mode-onload="true">
+<!-- Modals go here -->
+<!-- Reference: https://www.gethalfmoon.com/docs/modal -->
+
+<!-- Page wrapper start -->
+<div class="page-wrapper with-navbar with-sidebar" data-sidebar-type="overlayed-sm-and-down">
+
+    <!-- Sticky alerts (toasts), empty container -->
+    <!-- Reference: https://www.gethalfmoon.com/docs/sticky-alerts-toasts -->
+    <div class="sticky-alerts"></div>
+
+    <!-- Navbar start -->
+    <nav class="navbar">
+        <!-- Reference: https://www.gethalfmoon.com/docs/navbar -->
+        <div class="navbar-content">
+            <!-- Sidebar toggle -->
+            <button class="btn btn-action" type="button" onclick="halfmoon.toggleSidebar()">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle sidebar</span> <!-- sr-only = show only on screen readers -->
+            </button>
+            <!-- Title -->
+            <a href="#" class="navbar-brand">
+                <img src="https://img.coc.tools/2020/dd270c447f018.png" alt="...">
+                Placeholder
+            </a>
+            <span class="navbar-text text-monospace">by Michael Ma</span>
+        </div>
+    </nav>
+    <!-- Navbar end -->
+    <div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
+    {% if current_user.is_authenticated %}
+        {% include 'navbar/user_navbar.html' %}
+    {% else %}
+        {% include 'navbar/guest_navbar.html' %}
+    {% endif %}
+
+    <!-- Content wrapper start -->
+    <div class="content-wrapper">
+        <!--
+          Add your page's main content here
+          Examples:
+          1. https://www.gethalfmoon.com/docs/content-and-cards/#building-a-page
+          2. https://www.gethalfmoon.com/docs/grid-system/#building-a-dashboard
+        -->
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- Content wrapper end -->
+
+</div>
+<!-- Page wrapper end -->
+</body>
+</html>

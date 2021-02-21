@@ -1,0 +1,31 @@
+<!-- Sidebar start -->
+<div class="sidebar">
+    <!-- Reference: https://www.gethalfmoon.com/docs/sidebar -->
+    <br/><br/>
+    <div class="sidebar-divider"></div>
+    <br/>
+    <a href={{ url_for('main.index') }} class="sidebar-link sidebar-link-with-icon active">
+        <span class="sidebar-icon">
+        <i class="fas fa-file-upload" aria-hidden="true"></i>
+        </span>
+        <button class="btn btn-primary btn-block" type="button">Upload</button>
+    </a>
+    <br/>
+    <div class="sidebar-divider"></div>
+    <br/>
+    <a href={{ url_for('auth.login') }} class="sidebar-link sidebar-link-with-icon">
+        <span class="sidebar-icon">
+            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+        </span>
+        <button class="btn btn-success btn-block" type="button">Sign in</button>
+    </a>
+    <a href={{ url_for('auth.register') }} class="sidebar-link sidebar-link-with-icon">
+        <span class="sidebar-icon">
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+        </span>
+        <button class="btn btn-secondary btn-block" type="button">Register</button>
+    </a>
+    <br/>
+    <div class="sidebar-divider"></div>
+</div>
+<!-- Sidebar end -->
