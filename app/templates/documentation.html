@@ -24,20 +24,5 @@
 
         </div>
     </div>
-    {% with passed = get_flashed_messages() %}
-    {% if passed %}
-    <script>
-        setTimeout(toastDangerAlert, 100);
-        function toastDangerAlert() {
-            halfmoon.initStickyAlert({
-                content: "{{ passed[0] }}",
-                title: "Alert",
-                alertType: "alert-danger",
-                fillType: "filled"
-            });
-        }
-    </script>
-    {% endif %}
-    {% endwith %}
 </div>
 {% endblock %}
