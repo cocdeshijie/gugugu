@@ -7,10 +7,11 @@
              <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Welcome, {{ current_user.username }}!</h2>
         </div>
         <div class="card">
-            <p>Role: {{ current_user.get_role() }}</p>
+            <p>Group: {{ current_user.group.name }}</p>
+            <p>Username: {{ current_user.username }}</p>
             <p>Email: {{ current_user.email }}</p>
-            <p>File upload count: placeholder</p>
-            <p>Space used: placeholder</p>
+            <p>File upload count: {{ current_user.upload_count }}</p>
+            <p>Space used: {{ current_user.space_used }} out of {{ current_user.group.space_limit }}</p>
             <div class="progress">
                 <div class="progress-bar" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
             </div>

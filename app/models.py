@@ -8,13 +8,19 @@ import bitmath
 class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
-    group_name = db.Column(db.String)
+    name = db.Column(db.String)
     manage_group = db.Column(db.Boolean)
     manage_user = db.Column(db.Boolean)
-    space_limit = db.Column(db.Integer, default=536870912)
+    space_limits = db.Column(db.Integer, default=536870912)
     users = db.relationship('User', backref='group')
     extension_setting = db.Column(db.Boolean, default=False)  # True=whitelist, False=blacklist
-    extensions = db.relationship('FileExtension', backref='extensions')
+    extensions = db.relationship('FileExtension', backref='extensions', lazy='dynamic')
+
+    @property
+    def space_limit(self):
+        if self.space_limits == -1:
+            return 'infinite'
+        return bitmath.Byte(bytes=self.space_limits).best_prefix().format("{value:.2f} {unit}")
 
 
 class FileExtension(db.Model):
@@ -31,9 +37,21 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(128))
     role = db.Column(db.Integer, default=3)
-    space_used = db.Column(db.Integer, default=0)
+    bytes = db.Column(db.Integer, default=0)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    uploads = db.relationship('Upload', backref='user')
+    uploads = db.relationship('Upload', backref='user', lazy='dynamic')
+
+    @property
+    def upload_count(self):
+        return self.uploads.count()
+
+    @property
+    def space_used(self):
+        return bitmath.Byte(bytes=self.bytes).best_prefix().format("{value:.2f} {unit}")
+
+    @space_used.setter
+    def space_used(self, change):
+        self.bytes += change
 
     @property
     def password(self):

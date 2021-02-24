@@ -14,6 +14,22 @@ def create_app(config_name):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        # create default admin user
+        from .models import Group, User
+        if Group.query.first() is None:
+            group = Group(name='Admin',
+                          manage_group=True,
+                          manage_user=True,
+                          space_limits=-1)
+            db.session.add(group)
+            db.session.commit()
+            user = User(username='admin',
+                        email='admin@admin.admin',
+                        password='123456',
+                        role=1,
+                        group_id=group.id)
+            db.session.add(user)
+            db.session.commit()
     login_manager.init_app(app)
     config[config_name].init_app(app)
 
@@ -25,6 +41,7 @@ def create_app(config_name):
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api')
+
 
     return app
 
