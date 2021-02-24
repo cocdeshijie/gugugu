@@ -21,12 +21,14 @@ def create_app(config_name):
                           manage_group=True,
                           manage_user=True,
                           space_limits=-1)
-            db.session.add(group)
+            group2 = Group(name='User',
+                          manage_group=False,
+                          manage_user=False)
+            db.session.add_all([group, group2])
             db.session.commit()
             user = User(username='admin',
                         email='admin@admin.admin',
                         password='123456',
-                        role=1,
                         group_id=group.id)
             db.session.add(user)
             db.session.commit()
