@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row row-eq-spacing-lg">
+    <!-- create group form -->
+    <div class="modal" id="create-group" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <a href="#" class="btn close" role="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+                <h5 class="modal-title">Create a group</h5>
+                <form action="{{ url_for('main.manage_group') }}" method="post">
+                    <div class="form-group">
+                        <label for="username" class="required">Name</label>
+                        <input type="text" id="username" class="form-control" placeholder="Name" required="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="required">Space limit</label>
+                        <input type="password" id="password" class="form-control" placeholder="Password" required="required">
+                    </div>
+                    <input class="btn btn-primary btn-block" type="submit" value="Create">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Manage Groups</h2>
+            <div class="card-content">
+                <a href="#create-group" class="btn btn-success" role="button">Create Group</a>
+            </div>
+        </div>
+    </div>
+    <!-- Delete group submit -->
+    {% for group in groups %}
+        {% if group.id != 1 %}
+            <div class="modal" id="modal-{{ group.id }}" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <a href="#" class="close" role="button" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+                        <h5 class="modal-title">Delete Group '{{ group.name }}'</h5>
+                        <p>
+                            Are you sure you want to delete group '{{ group.name }}'?
+                            All users within the group will also be deleted.
+                        </p>
+                        <form id="{{ group.id }}" action="{{ url_for('main.manage_group') }}" method="post">
+                            {{ form.group_id(value=group.id) }}
+                        </form>
+                        <div class="text-right mt-20">
+                            <button onclick="location.href='#'" class="btn mr-5">Close</button>
+                            <button type="submit" class="btn btn-danger" form="{{ group.id }}">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <!-- Group list -->
+    <div class="col-lg-8">
+        <div class="card">
+            <h2 class="card-title">Group List</h2>
+            <div class="overflow-auto">
+                <table class="table table-no-outer-padding">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Manage Group</th>
+                            <th>Manage Group User</th>
+                            <th>Manage All Users</th>
+                            <th>Space Limit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    {% for group in groups %}
+                        {% if group.id != 1 %}
+                            <thead>
+                                <tr>
+                                    <th>{{ group.name }}</th>
+                                    <th>{{ group.manage_group }}</th>
+                                    <th>{{ group.manage_group_user }}</th>
+                                    <th>{{ group.manage_all_user }}</th>
+                                    <th>{{ group.space_limit }}</th>
+                                    <th class="text-center">
+                                         <a href="#modal-{{ group.id }}" class="btn btn-danger" role="button">X</a>
+                                    </th>
+                                </tr>
+                            </thead>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
