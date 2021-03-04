@@ -76,20 +76,22 @@
         {% endblock %}
     </div>
     <!-- Content wrapper end -->
-    {% with passed = get_flashed_messages() %}
-    {% if passed %}
-    <script>
-        setTimeout(toastDangerAlert, 100);
-        function toastDangerAlert() {
-            halfmoon.initStickyAlert({
-                content: "{{ passed[0] }}",
-                title: "Error",
-                alertType: "alert-danger",
-                fillType: "filled"
-            });
-        }
-    </script>
-    {% endif %}
+    {% with passed = get_flashed_messages(with_categories=true) %}
+        {% if passed %}
+            {% for category, message in passed %}
+                <script>
+                    setTimeout(toastDangerAlert, 100);
+                    function toastDangerAlert() {
+                        halfmoon.initStickyAlert({
+                            content: "{{ message[0] }}",
+                            title: "{{ message[1] }}",
+                            alertType: "alert-{{ category }}",
+                            fillType: "filled"
+                        });
+                    }
+                </script>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 </div>
 <!-- Page wrapper end -->

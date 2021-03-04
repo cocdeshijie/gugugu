@@ -11,14 +11,14 @@
                 <h5 class="modal-title">Create a group</h5>
                 <form action="{{ url_for('main.manage_group') }}" method="post">
                     <div class="form-group">
-                        <label for="username" class="required">Name</label>
-                        <input type="text" id="username" class="form-control" placeholder="Name" required="required">
+                        <label for="name" class="required">Group Name</label>
+                        {{ create_group_form.name(placeholder="Group Name",class="form-control",type="text") }}
                     </div>
                     <div class="form-group">
-                        <label for="password" class="required">Space limit</label>
-                        <input type="password" id="password" class="form-control" placeholder="Password" required="required">
+                        <label for="number">Space limit (bytes, default 536870912 = 512MiB)</label>
+                        {{ create_group_form.space_limit(placeholder="Space limit",class="form-control",type="number") }}
                     </div>
-                    <input class="btn btn-primary btn-block" type="submit" value="Create">
+                    {{ create_group_form.create(class='btn btn-primary btn-block',type='submit',value='Create') }}
                 </form>
             </div>
         </div>
@@ -46,7 +46,7 @@
                             All users within the group will also be deleted.
                         </p>
                         <form id="{{ group.id }}" action="{{ url_for('main.manage_group') }}" method="post">
-                            {{ form.group_id(value=group.id) }}
+                            {{ delete_group_form.group_id(value=group.id) }}
                         </form>
                         <div class="text-right mt-20">
                             <button onclick="location.href='#'" class="btn mr-5">Close</button>
@@ -66,9 +66,6 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Manage Group</th>
-                            <th>Manage Group User</th>
-                            <th>Manage All Users</th>
                             <th>Space Limit</th>
                             <th>Delete</th>
                         </tr>
@@ -78,9 +75,6 @@
                             <thead>
                                 <tr>
                                     <th>{{ group.name }}</th>
-                                    <th>{{ group.manage_group }}</th>
-                                    <th>{{ group.manage_group_user }}</th>
-                                    <th>{{ group.manage_all_user }}</th>
                                     <th>{{ group.space_limit }}</th>
                                     <th class="text-center">
                                          <a href="#modal-{{ group.id }}" class="btn btn-danger" role="button">X</a>

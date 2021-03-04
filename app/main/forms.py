@@ -1,11 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
-from wtforms import ValidationError
-from ..models import Group, User
+from wtforms import StringField, HiddenField, IntegerField, SubmitField
+from wtforms.validators import DataRequired, Optional
+
 
 class DeleteGroupForm(FlaskForm):
     group_id = HiddenField()
 
+
 class CreateGroupForm(FlaskForm):
-    pass
+    name = StringField('Name', validators=[DataRequired()])
+    space_limit = IntegerField('Space limit', default=536870912, validators=[Optional()])
+    create = SubmitField('Create')

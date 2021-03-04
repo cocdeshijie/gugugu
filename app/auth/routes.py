@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, Markup
 from flask_login import login_user, logout_user, login_required, current_user
 from . import auth
 from .. import db
@@ -13,14 +13,14 @@ def before_request():
 def login():
     form = LoginForm()
     if current_user.is_authenticated:
-        flash('You are already logged in!')
+        flash(['You are already logged in!', 'Error'], 'danger')
         return redirect(url_for('main.index'))
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             return redirect(url_for('main.index'))
-        flash('Invalid username or password.')
+        flash(['Invalid username or password.', 'Error'], 'danger')
     return render_template('login.html', form=form)
 
 

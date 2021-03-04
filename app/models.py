@@ -9,9 +9,9 @@ class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    manage_group = db.Column(db.Boolean)
-    manage_group_user = db.Column(db.Boolean)
-    manage_all_user = db.Column(db.Boolean)
+    manage_group = db.Column(db.Boolean, default=False)
+    manage_group_user = db.Column(db.Boolean, default=False)
+    manage_all_user = db.Column(db.Boolean, default=False)
     space_limits = db.Column(db.Integer, default=536870912)
     users = db.relationship('User', backref='group')
     extension_setting = db.Column(db.Boolean, default=False)  # True=whitelist, False=blacklist
@@ -21,7 +21,11 @@ class Group(db.Model):
     def space_limit(self):
         if self.space_limits == -1:
             return 'infinite'
-        return bitmath.Byte(bytes=self.space_limits).best_prefix().format("{value:.2f} {unit}")
+        return bitmath.Byte(bytes=self.space_limits).best_prefix().format("{value:.2f}{unit}")
+
+    @space_limit.setter
+    def space_limit(self, bytes):
+        self.space_limits = bytes
 
 
 class FileExtension(db.Model):
