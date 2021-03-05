@@ -34,19 +34,11 @@
         </a>
     {%  endif %}
     {% if current_user.group.manage_group_user %}
-        <a href={{ url_for('main.manage_group_user') }} class="sidebar-link sidebar-link-with-icon">
+        <a href={{ url_for('main.manage_user') }} class="sidebar-link sidebar-link-with-icon">
             <span class="sidebar-icon">
             <i class="fas fa-cog" aria-hidden="true"></i>
             </span>
-            <button class="btn btn-primary btn-block" type="button">Manage Group Users</button>
-        </a>
-    {% endif %}
-    {% if current_user.group.manage_all_user %}
-       <a href={{ url_for('main.manage_all_user') }} class="sidebar-link sidebar-link-with-icon">
-            <span class="sidebar-icon">
-            <i class="fas fa-cog" aria-hidden="true"></i>
-            </span>
-            <button class="btn btn-primary btn-block" type="button">Manage All Users</button>
+            <button class="btn btn-primary btn-block" type="button">Manage Users</button>
         </a>
     {% endif %}
     <br/>

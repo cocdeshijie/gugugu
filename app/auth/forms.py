@@ -16,9 +16,9 @@ class RegistrationForm(FlaskForm):
                                              Length(1, 64),
                                              Email()])
     username = StringField('Username', validators=[DataRequired(),
-                                                   Length(1, 64), ])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password',
-                                                                             message='Password does not match.')])
+                                                   Length(1, 64)])
+    password = PasswordField('Password', validators=[DataRequired(),
+                                                     EqualTo('confirm_password', message='Password does not match.')])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
     submit = SubmitField('Register')
 
