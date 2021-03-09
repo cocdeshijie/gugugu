@@ -9,9 +9,7 @@ class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    manage_group = db.Column(db.Boolean, default=False)
-    manage_group_user = db.Column(db.Boolean, default=False)
-    manage_all_user = db.Column(db.Boolean, default=False)
+    admin = db.Column(db.Boolean, default=False)
     space_limits = db.Column(db.Integer, default=536870912)
     users = db.relationship('User', backref='group')
     extension_setting = db.Column(db.Boolean, default=False)  # True=whitelist, False=blacklist

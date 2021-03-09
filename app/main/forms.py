@@ -17,12 +17,19 @@ class CreateGroupForm(FlaskForm):
 
 
 class UserAccountForm(FlaskForm):
-    username = StringField('Username')
-    email = StringField('Email')
-    old_password = PasswordField('Old password')
+    username = StringField('Username',
+                           validators=[Optional()])
+    email = StringField('Email',
+                        validators=[Optional()])
+    old_password = PasswordField('Old password',
+                                 validators=[Optional()])
     new_password = PasswordField('New password',
-                                 validators=[EqualTo('new_password_confirm', message='Password does not match.')])
-    new_password_confirm = PasswordField('New password')
+                                 validators=[Optional(),
+                                             EqualTo('new_password_confirm',
+                                                     message='Password does not match.')])
+    new_password_confirm = PasswordField('New password',
+                                         validators=[Optional()])
+    submit = SubmitField('Submit')
 
     def check_username(self):
         if User.query.filter_by(username=self.username.data).first():

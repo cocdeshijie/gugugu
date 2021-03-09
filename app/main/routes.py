@@ -5,22 +5,53 @@ from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm
 from ..models import Group, User
 from .. import db
 
+
 @main.route('/')
 def index():
     return render_template('index.html')
 
-@main.route('/setting', methods=['POST', 'GET'])
-@login_required
-def setting():
-    form = UserAccountForm()
 
-    return render_template('/setting/setting.html',
+@main.route('/account', methods=['POST', 'GET'])
+@login_required
+def account():
+    form = UserAccountForm()
+    if form.validate_on_submit():
+        user = User.query.get(current_user.id)
+        if form.username.data and form.username.data != user.username:
+            form.check_username()
+            user.username = form.username.data
+        if form.email.data and form.email.data != user.email:
+            user.email = form.email.data
+        if form.new_password.data:
+            if not user.verify_password(form.old_password.data):
+                flash(['Wrong password.', 'Error'], 'danger')
+                return render_template('/setting/account.html',
+                                       current_user=current_user,
+                                       form=form)
+            user.password = form.new_password.data
+        db.session.commit()
+        flash(['Saved.', 'Success'], 'success')
+        return render_template('/setting/account.html',
+                               current_user=current_user,
+                               form=form)
+    return render_template('/setting/account.html',
                            current_user=current_user,
                            form=form)
+
+@main.route('/site_setting', methods=['POST', 'GET'])
+@login_required
+def site_setting():
+    if not current_user.group.admin:
+        flash(['You don\'t have access to this page.', 'Error'], 'danger')
+        return redirect(url_for('main.index'))
+    return render_template('/setting/site_setting.html')
 
 @main.route('/manage_group', methods=['POST', 'GET'])
 @login_required
 def manage_group():
+    if not current_user.group.admin:
+        flash(['You don\'t have access to this page.', 'Error'], 'danger')
+        return redirect(url_for('main.index'))
     delete_group_form = DeleteGroupForm()
     create_group_form = CreateGroupForm()
     groups = Group.query.all()
@@ -49,8 +80,12 @@ def manage_group():
 @main.route('/manage_user', methods=['POST', 'GET'])
 @login_required
 def manage_user():
+    if not current_user.group.admin:
+        flash(['You don\'t have access to this page.', 'Error'], 'danger')
+        return redirect(url_for('main.index'))
     return render_template('/setting/manage_user.html',
                            current_user=current_user)
+
 
 @main.route('/documentation')
 def documentation():

@@ -18,13 +18,9 @@ def create_app(config_name):
         from .models import Group, User
         if Group.query.first() is None:
             group = Group(name='Admin',
-                          manage_group=True,
-                          manage_group_user=True,
-                          manage_all_user=True,
+                          admin=True,
                           space_limits=-1)
-            group2 = Group(name='User',
-                          manage_group=False,
-                          manage_group_user=False)
+            group2 = Group(name='User')
             db.session.add_all([group, group2])
             db.session.commit()
             user = User(username='admin',

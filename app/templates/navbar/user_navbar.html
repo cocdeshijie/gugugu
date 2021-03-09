@@ -19,21 +19,25 @@
     <br/>
     <div class="sidebar-divider"></div>
     <br/>
-    <a href={{ url_for('main.setting') }} class="sidebar-link sidebar-link-with-icon">
+    <a href={{ url_for('main.account') }} class="sidebar-link sidebar-link-with-icon">
         <span class="sidebar-icon">
-        <i class="fas fa-cog" aria-hidden="true"></i>
+        <i class="fas fa-user" aria-hidden="true"></i>
         </span>
-        <button class="btn btn-primary btn-block" type="button">Setting</button>
+        <button class="btn btn-primary btn-block" type="button">Account</button>
     </a>
-    {% if current_user.group.manage_group %}
+    {% if current_user.group.admin %}
+        <a href={{ url_for('main.site_setting') }} class="sidebar-link sidebar-link-with-icon">
+            <span class="sidebar-icon">
+            <i class="fas fa-cog" aria-hidden="true"></i>
+            </span>
+            <button class="btn btn-primary btn-block" type="button">Site Setting</button>
+        </a>
         <a href={{ url_for('main.manage_group') }} class="sidebar-link sidebar-link-with-icon">
             <span class="sidebar-icon">
             <i class="fas fa-cog" aria-hidden="true"></i>
             </span>
             <button class="btn btn-primary btn-block" type="button">Manage Groups</button>
         </a>
-    {%  endif %}
-    {% if current_user.group.manage_group_user %}
         <a href={{ url_for('main.manage_user') }} class="sidebar-link sidebar-link-with-icon">
             <span class="sidebar-icon">
             <i class="fas fa-cog" aria-hidden="true"></i>
@@ -41,6 +45,7 @@
             <button class="btn btn-primary btn-block" type="button">Manage Users</button>
         </a>
     {% endif %}
+
     <br/>
     <div class="sidebar-divider"></div>
     <br/>

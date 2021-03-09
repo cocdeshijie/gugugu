@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row row-eq-spacing-lg">
+    <div class="col-lg-4">
+        <div class="card">
+            <br>
+             <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Welcome, {{ current_user.username }}!</h2>
+        </div>
+        <div class="card">
+            <p>Group: {{ current_user.group.name }}</p>
+            <p>Username: {{ current_user.username }}</p>
+            <p>Email: {{ current_user.email }}</p>
+            <p>File upload count: {{ current_user.upload_count }}</p>
+            <p>Space used: {{ current_user.space_used }} out of {{ current_user.group.space_limit }}</p>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <h2 class="card-title">Edit Account</h2>
+            <form action={{ url_for('main.account') }} method="post" class="w-600 mw-full">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    {{ form.username(type='text',
+                    class='form-control',
+                    id='username',
+                    placeholder='Username',
+                    value=current_user.username) }}
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    {{ form.email(type='email',
+                    class='form-control',
+                    id='email',
+                    placeholder='Email',
+                    value=current_user.email) }}
+                </div>
+                <div class="form-group">
+                    <label for="password">Current Password</label>
+                    {{ form.old_password(type='password',
+                    class='form-control',
+                    id='password',
+                    placeholder='Leave empty if no change needed',
+                    value='') }}
+                </div>
+                <div class="form-group">
+                    <label for="password">New Password</label>
+                    {{ form.new_password(type='password',
+                    class='form-control',
+                    id='password',
+                    placeholder='Leave empty if no change needed',
+                    value='') }}
+                </div>
+                <div class="form-group">
+                    <label for="password">Confirm New Password</label>
+                    {{ form.new_password_confirm(type='password',
+                    class='form-control',
+                    id='password',
+                    placeholder='Confirm Password',
+                    value='') }}
+                </div>
+                {{ form.submit(class='btn btn-primary btn-block',
+                type='submit',
+                value='Save') }}
+                {% if form.errors %}
+                    {{ form.errors }}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
