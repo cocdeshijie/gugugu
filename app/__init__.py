@@ -7,6 +7,7 @@ from config import config
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+site_config
 
 def create_app(config_name):
     app = Flask(__name__)

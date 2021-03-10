@@ -15,7 +15,7 @@
                         {{ create_group_form.name(placeholder="Group Name",class="form-control",type="text") }}
                     </div>
                     <div class="form-group">
-                        <label for="number">Space limit (bytes, default 536870912 = 512MiB)</label>
+                        <label for="number">Space limit (bytes, default 536870912 = 512MiB)<br>0 for unlimited</label>
                         {{ create_group_form.space_limit(placeholder="Space limit",class="form-control",type="number") }}
                     </div>
                     {{ create_group_form.create(class='btn btn-primary btn-block',type='submit',value='Create') }}
