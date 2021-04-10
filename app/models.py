@@ -7,29 +7,38 @@ import bitmath
 class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     admin = db.Column(db.Boolean, default=False)
     space_limits = db.Column(db.Integer, default=536870912)
+    delete = db.Column(db.Boolean, default=True)
     users = db.relationship('User', backref='group')
     extension_setting = db.Column(db.Boolean, default=False)  # True=whitelist, False=blacklist
-    extensions = db.relationship('FileExtension', backref='extensions', lazy='dynamic')
+    extensions = db.Column(db.String, default='')
 
     @property
     def space_limit(self):
-        if self.space_limits == -1:
-            return 'infinite'
         return bitmath.Byte(bytes=self.space_limits).best_prefix().format("{value:.2f}{unit}")
 
     @space_limit.setter
     def space_limit(self, bytes):
         self.space_limits = bytes
 
+    @property
+    def user_count(self):
+        return len(self.users)
 
-class FileExtension(db.Model):
-    __tablename__ = 'fileextensions'
-    id = db.Column(db.Integer, primary_key=True)
-    file_extension = db.Column(db.String)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
+    @property
+    def extension_list(self):
+        return [extension.strip() for extension in self.extensions.split(',')]
+
+    @property
+    def extensions_input(self):
+        return self.extensions
+
+    @extensions_input.setter
+    def extensions_input(self, extensions):
+        extensions= [extension.strip() for extension in extensions.split(',')]
+        self.extensions = ', '.join(extensions)
 
 
 class User(UserMixin, db.Model):

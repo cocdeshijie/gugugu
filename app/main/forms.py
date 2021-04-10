@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField, IntegerField, SubmitField, PasswordField, ValidationError
+from wtforms import StringField, HiddenField, IntegerField, SubmitField, PasswordField, ValidationError, BooleanField
 from wtforms.validators import DataRequired, Optional, EqualTo
 from ..models import User
+
 
 class DeleteGroupForm(FlaskForm):
     group_id = HiddenField()
@@ -34,3 +35,16 @@ class UserAccountForm(FlaskForm):
     def check_username(self):
         if User.query.filter_by(username=self.username.data).first():
             raise ValidationError('Username is in use.')
+
+
+class ManageGroupForm(FlaskForm):
+    group_id = HiddenField()
+    name = StringField('Name',
+                       validators=[Optional()])
+    space_limit = IntegerField('Space limit',
+                               validators=[Optional()])
+    extension_setting = BooleanField('Extension', validators=[Optional()])
+    extensions = StringField('Extensions',
+                             validators=[Optional()])
+    submit = SubmitField('Submit')
+

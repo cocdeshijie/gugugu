@@ -11,8 +11,8 @@
                 <h5 class="modal-title">Create a group</h5>
                 <form action="{{ url_for('main.manage_group') }}" method="post">
                     <div class="form-group">
-                        <label for="name" class="required">Group Name</label>
-                        {{ create_group_form.name(placeholder="Group Name",class="form-control",type="text") }}
+                        <label for="name" class="required">Group name</label>
+                        {{ create_group_form.name(placeholder="Group name",class="form-control",type="text") }}
                     </div>
                     <div class="form-group">
                         <label for="number">Space limit (bytes, default 536870912 = 512MiB)<br>0 for unlimited</label>
@@ -57,6 +57,62 @@
             </div>
         {% endif %}
     {% endfor %}
+    <!-- Manage Group -->
+    {% for group in groups %}
+        {% if group.id != 1 %}
+            <div class="modal" id="modal-0{{ group.id }}" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form id="{{ group.id }}" action="{{ url_for('main.manage_group') }}" method="post">
+                            {{ manage_group_form.group_id(value=group.id) }}
+                            <div class="form-group">
+                                <label for="name">Group name</label>
+                                {{ manage_group_form.name(type='text',
+                                class='form-control',
+                                id='name',
+                                placeholder='Group name',
+                                value=group.name) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="space">Space limit</label>
+                                {{ manage_group_form.space_limit(type='number',
+                                class='form-control',
+                                id='space',
+                                placeholder='Space limit',
+                                value=group.space_limits) }}
+                            </div>
+                            {% set switch_id = group.id | string() %}
+                            <div class="custom-switch">
+                                {% if group.extension_setting %}
+                                    {{ manage_group_form.extension_setting(type='checkbox',
+                                    id='switch-' + switch_id,
+                                    checked='checked') }}
+                                    <label for="switch-{{ switch_id }}">File extension settings</label>
+                                {% else %}
+                                    {{ manage_group_form.extension_setting(type='checkbox',
+                                    id='switch-' + switch_id) }}
+                                    <label for="switch-{{ switch_id }}">File extension settings</label>
+                                {% endif %}
+                            </div>
+                            <br>
+                            <span class="badge">Turn on for whitelist, off for blacklist, separate extension by ",", i.e. png,gif,svg</span>
+                            <br><br>
+                            <div class="form-group">
+                                {{ manage_group_form.extensions(type='text',
+                                class='form-control',
+                                id='extension',
+                                placeholder='Extensions',
+                                value=group.extensions_input) }}
+                            </div>
+                            {{ manage_group_form.submit(class='btn btn-primary btn-block',
+                            type='submit',
+                            value='Save') }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
     <!-- Group list -->
     <div class="col-lg-8">
         <div class="card">
@@ -67,6 +123,8 @@
                         <tr>
                             <th>Name</th>
                             <th>Space Limit</th>
+                            <th>User Count</th>
+                            <th>Manage</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
@@ -75,9 +133,13 @@
                             <thead>
                                 <tr>
                                     <th>{{ group.name }}</th>
-                                    <th>{{ group.space_limit }}</th>
-                                    <th class="text-center">
-                                         <a href="#modal-{{ group.id }}" class="btn btn-danger" role="button">X</a>
+                                    <th>{{ "Infinite" if group.space_limits == 0 else group.space_limit }}</th>
+                                    <th>{{ group.user_count }}</th>
+                                    <th class="text-left">
+                                         <a href="#modal-0{{ group.id }}" class="btn btn-secondary" role="button">⚙</a>
+                                    </th>
+                                    <th class="text-left">
+                                         <a href="#modal-{{ group.id }}" class="btn btn-danger" role="button">❌</a>
                                     </th>
                                 </tr>
                             </thead>
