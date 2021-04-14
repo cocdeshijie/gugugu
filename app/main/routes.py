@@ -125,6 +125,7 @@ def manage_user():
                            current_user=current_user)
 
 
+
 @main.route('/documentation')
 def documentation():
     return 'yes'
