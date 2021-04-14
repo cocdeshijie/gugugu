@@ -1,9 +1,10 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 from . import main
-from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm, ManageGroupForm
+from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm, ManageGroupForm, ManageSiteForm
 from ..models import Group, User
 from .. import db
+import json
 
 
 @main.route('/')
@@ -42,10 +43,28 @@ def account():
 @main.route('/site_setting', methods=['POST', 'GET'])
 @login_required
 def site_setting():
+    site_config = json.loads(open('./app/files/config.json', 'r').read())
+    form = ManageSiteForm()
+    form.default_group.choices = [(group.id, group.name) for group in Group.query.all() if group.id != 1]
+    form.default_group.default = site_config['default_group_id']
+    form.process()
     if not current_user.group.admin:
         flash(['You don\'t have access to this page.', 'Error'], 'danger')
         return redirect(url_for('main.index'))
-    return render_template('/setting/site_setting.html')
+    if form.validate_on_submit():
+        with open('./app/files/config.json', 'w+') as f:
+            json.dump({'site_title': form.site_title.data,
+                       'site_description': form.site_description.data,
+                       'guest_upload': form.guest_upload.data,
+                       'api': form.api.data,
+                       'default_group_id': int(form.default_group.raw_data[0]),
+                       'default_file_location': 'local'
+                       }, f)
+        flash(['Saved.', 'Success'], 'success')
+        return redirect(url_for('main.site_setting'))
+    return render_template('/setting/site_setting.html',
+                           site_config=site_config,
+                           form=form)
 
 
 @main.route('/manage_group', methods=['POST', 'GET'])
@@ -77,6 +96,9 @@ def manage_group():
     if delete_group_form.group_id.data and delete_group_form.validate_on_submit():
         if len(groups) == 2:
             flash(['At least one group is needed.', 'Error'], 'danger')
+            return redirect(url_for('main.manage_group'))
+        if int(delete_group_form.group_id.data) == json.loads(open('./app/files/config.json', 'r').read())['default_group_id']:
+            flash(['Default group can not be deleted.', 'Error'], 'danger')
             return redirect(url_for('main.manage_group'))
         group = Group.query.get(delete_group_form.group_id.data)
         flash([group.name + ' deleted.', 'Deleted'], 'secondary')

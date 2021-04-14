@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField, IntegerField, SubmitField, PasswordField, ValidationError, BooleanField
+from wtforms import StringField, HiddenField, IntegerField, SubmitField, PasswordField, ValidationError, BooleanField, SelectField
 from wtforms.validators import DataRequired, Optional, EqualTo
-from ..models import User
+from ..models import User, Group
+import json
 
 
 class DeleteGroupForm(FlaskForm):
@@ -47,4 +48,20 @@ class ManageGroupForm(FlaskForm):
     extensions = StringField('Extensions',
                              validators=[Optional()])
     submit = SubmitField('Submit')
+
+
+class ManageSiteForm(FlaskForm):
+    site_title = StringField('Site title',
+                       validators=[Optional()])
+    site_description = StringField('Site description',
+                       validators=[Optional()])
+    guest_upload = BooleanField('Guest upload', validators=[Optional()])
+    api = BooleanField('API', validators=[Optional()])
+    default_group = SelectField('Default Group',
+                                coerce=int)
+    default_file_location = StringField('xxx',
+                       validators=[Optional()])
+    submit = SubmitField('Submit')
+
+
 

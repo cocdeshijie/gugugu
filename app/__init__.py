@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from config import config
+from pathlib import Path
+import json
 
 
 db = SQLAlchemy()
@@ -33,6 +35,15 @@ def create_app(config_name):
             db.session.commit()
     login_manager.init_app(app)
     config[config_name].init_app(app)
+    if not Path('./app/files/config.json').is_file():
+        with open('./app/files/config.json', 'w+') as f:
+            json.dump({'site_title': 'Placeholder',
+                       'site_description': 'File host',
+                       'guest_upload': True,
+                       'api': True,
+                       'default_group_id': 2,
+                       'default_file_location': 'local'
+                       }, f)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
@@ -44,5 +55,4 @@ def create_app(config_name):
     app.register_blueprint(api_blueprint, url_prefix='/api')
 
     return app
-
 

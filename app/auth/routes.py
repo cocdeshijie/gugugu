@@ -5,6 +5,7 @@ from . import auth
 from .. import db
 from ..models import User
 from .forms import LoginForm, RegistrationForm
+import json
 
 
 @auth.before_app_request
@@ -42,7 +43,8 @@ def register():
             return redirect(url_for('auth.register'))
         user = User(username=form.username.data,
                     email=form.email.data.lower(),
-                    password=form.password.data)
+                    password=form.password.data,
+                    group_id=int(json.loads(open('./app/files/config.json', 'r').read())['default_group_id']))
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('auth.login'))
