@@ -17,7 +17,8 @@ class Group(db.Model):
 
     @property
     def space_limit(self):
-        return bitmath.Byte(bytes=self.space_limits).best_prefix().format("{value:.2f}{unit}")
+        return 'infinite' if self.space_limits == 0 \
+            else bitmath.Byte(bytes=self.space_limits).best_prefix().format("{value:.2f}{unit}")
 
     @space_limit.setter
     def space_limit(self, bytes):
@@ -52,8 +53,16 @@ class User(UserMixin, db.Model):
     uploads = db.relationship('Upload', backref='user', lazy='dynamic')
 
     @property
+    def group_name(self):
+        return Group.query.get(self.group_id).name
+
+    @property
     def upload_count(self):
         return self.uploads.count()
+
+    @property
+    def max_space(self):
+        return Group.query.get(self.group_id).space_limit
 
     @property
     def space_used(self):

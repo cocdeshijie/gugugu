@@ -3,8 +3,36 @@
 <div class="row row-eq-spacing-lg">
     <div class="col-lg-4">
         <div class="card">
-            <br>
-             <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i>Manage All User</h2>
+            <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Manage users</h2>
+            <div class="card-content">
+                placeholder
+            </div>
+        </div>
+    </div>
+    <!-- group list -->
+    <div class="col-lg-8">
+        <div class="card">
+            <h2 class="card-title">User list</h2>
+            <div class="overflow-auto">
+                <table class="table table-no-outer-padding">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Group</th>
+                            <th>Space used</th>
+                        </tr>
+                    </thead>
+                    {% for user in users %}
+                        <thead>
+                            <tr>
+                                <th>{{ user.username }}</th>
+                                <th>{{ user.group_name }}</th>
+                                <th>{{ user.space_used }} out of {{ user.max_space }}</th>
+                            </tr>
+                        </thead>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
 </div>

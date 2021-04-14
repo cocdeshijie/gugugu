@@ -62,7 +62,7 @@ def site_setting():
                        }, f)
         flash(['Saved.', 'Success'], 'success')
         return redirect(url_for('main.site_setting'))
-    return render_template('/setting/site_setting.html',
+    return render_template('/setting/site.html',
                            site_config=site_config,
                            form=form)
 
@@ -78,20 +78,23 @@ def manage_group():
     manage_group_form = ManageGroupForm()
     groups = Group.query.all()
     if manage_group_form.submit.data and manage_group_form.validate_on_submit():
-        group = Group.query.get(manage_group_form.group_id.data)
+        group = Group.query.get(int(manage_group_form.group_id.data))
         group.name = manage_group_form.name.data
-        group.space_limits = manage_group_form.space_limit.data
+        group.space_limits = int(manage_group_form.space_limit.data)
         group.extension_setting = manage_group_form.extension_setting.data
         group.extensions_input = manage_group_form.extensions.data
         db.session.commit()
         flash(['Saved.', 'Success'], 'success')
         return redirect(url_for('main.manage_group'))
     if create_group_form.create.data and create_group_form.validate_on_submit():
+        if Group.query.filter_by(name=create_group_form.name.data).first() is not None:
+            flash(['Group {} exists.'.format(create_group_form.name.data), 'Error'], 'danger')
+            return redirect(url_for('main.manage_group'))
         new_group = Group(name=create_group_form.name.data,
                           space_limits=create_group_form.space_limit.data)
         db.session.add(new_group)
         db.session.commit()
-        flash([new_group.name + ' created.', 'Success'], 'success')
+        flash(['Group {} created.'.format(new_group.name), 'Success'], 'success')
         return redirect(url_for('main.manage_group'))
     if delete_group_form.group_id.data and delete_group_form.validate_on_submit():
         if len(groups) == 2:
@@ -101,13 +104,13 @@ def manage_group():
             flash(['Default group can not be deleted.', 'Error'], 'danger')
             return redirect(url_for('main.manage_group'))
         group = Group.query.get(delete_group_form.group_id.data)
-        flash([group.name + ' deleted.', 'Deleted'], 'secondary')
+        flash([group.name + ' deleted.', 'Deleted'], 'success')
         for user in group.users:
             db.session.delete(user)
         db.session.delete(group)
         db.session.commit()
         return redirect(url_for('main.manage_group'))
-    return render_template('/setting/manage_group.html',
+    return render_template('/setting/groups.html',
                            current_user=current_user,
                            groups=groups,
                            delete_group_form=delete_group_form,
@@ -121,7 +124,9 @@ def manage_user():
     if not current_user.group.admin:
         flash(['You don\'t have access to this page.', 'Error'], 'danger')
         return redirect(url_for('main.index'))
-    return render_template('/setting/manage_user.html',
+    users = User.query.all()
+    return render_template('/setting/users.html',
+                           users=users,
                            current_user=current_user)
 
 

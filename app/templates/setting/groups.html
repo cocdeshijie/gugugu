@@ -23,11 +23,12 @@
             </div>
         </div>
     </div>
+    <!-- end create group form -->
     <div class="col-lg-4">
         <div class="card">
-            <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Manage Groups</h2>
+            <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Manage groups</h2>
             <div class="card-content">
-                <a href="#create-group" class="btn btn-success" role="button">Create Group</a>
+                <a href="#create-group" class="btn btn-success" role="button">Create group</a>
             </div>
         </div>
     </div>
@@ -40,7 +41,7 @@
                         <a href="#" class="close" role="button" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </a>
-                        <h5 class="modal-title">Delete Group '{{ group.name }}'</h5>
+                        <h5 class="modal-title">Delete group '{{ group.name }}'</h5>
                         <p>
                             Are you sure you want to delete group '{{ group.name }}'?
                             All users within the group will also be deleted.
@@ -57,7 +58,8 @@
             </div>
         {% endif %}
     {% endfor %}
-    <!-- Manage Group -->
+    <!-- end delete group submit -->
+    <!-- manage group form-->
     {% for group in groups %}
         {% if group.id != 1 %}
             <div class="modal" id="modal-0{{ group.id }}" role="dialog">
@@ -113,17 +115,18 @@
             </div>
         {% endif %}
     {% endfor %}
-    <!-- Group list -->
+    <!-- end manage group form-->
+    <!-- group list -->
     <div class="col-lg-8">
         <div class="card">
-            <h2 class="card-title">Group List</h2>
+            <h2 class="card-title">Group list</h2>
             <div class="overflow-auto">
                 <table class="table table-no-outer-padding">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Space Limit</th>
-                            <th>User Count</th>
+                            <th>Space limit</th>
+                            <th>User count</th>
                             <th>Manage</th>
                             <th>Delete</th>
                         </tr>
