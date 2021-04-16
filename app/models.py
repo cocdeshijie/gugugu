@@ -95,6 +95,10 @@ class Upload(db.Model):
     request_volume = db.Column(db.Integer)
     password = db.Column(db.Boolean)
 
+class Test(db.Model):
+    __tablename__ = 'test'
+    id = db.Column(db.Integer, primary_key=True)
+
 
 @login_manager.user_loader
 def load_user(user_id):
