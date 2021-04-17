@@ -2,6 +2,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import db, login_manager
 import bitmath
+import secrets
+
 
 class SiteSetting(db.Model):
     __tablename__ = 'sitesetting'
@@ -61,6 +63,7 @@ class User(UserMixin, db.Model):
     bytes = db.Column(db.Integer, default=0)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), default=2)
     uploads = db.relationship('Upload', backref='user', lazy='dynamic')
+    api_key = db.Column(db.String(16), default=secrets.token_urlsafe(16))
 
     @property
     def group_name(self):
