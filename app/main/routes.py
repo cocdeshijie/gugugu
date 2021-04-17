@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
 from . import main
 from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm, ManageGroupForm, ManageSiteForm, DeleteUserForm
-from ..models import Group, User
+from ..models import Group, User, SiteSetting
 from .. import db
 import json
 
@@ -43,28 +43,26 @@ def account():
 @main.route('/site_setting', methods=['POST', 'GET'])
 @login_required
 def site_setting():
-    site_config = json.loads(open('./app/files/config.json', 'r').read())
-    #print(site_config['site_title'])
+    site_setting = SiteSetting.query.get(1)
     form = ManageSiteForm()
     form.default_group.choices = [(group.id, group.name) for group in Group.query.all() if group.id != 1]
-    form.default_group.default = site_config['default_group_id']
+    form.default_group.default = site_setting.default_group_id
     form.process()
     if not current_user.group.admin:
         flash(['You don\'t have access to this page.', 'Error'], 'danger')
         return redirect(url_for('main.index'))
     if form.validate_on_submit():
-        with open('./app/files/config.json', 'w') as f:
-            json.dump({'site_title': form.site_title.raw_data[0],
-                       'site_description': form.site_description.raw_data[0],
-                       'guest_upload': form.guest_upload.raw_data,
-                       'api': form.api.raw_data,
-                       'default_group_id': int(form.default_group.raw_data[0]),
-                       'default_file_location': 'local'
-                       }, f)
+        site_setting.title = form.site_title.raw_data[0]
+        site_setting.site_description = form.site_description.raw_data[0]
+        site_setting.guest_upload = False if not form.guest_upload.raw_data else True
+        site_setting.api = False if not form.api.raw_data else True
+        site_setting.default_group_id = int(form.default_group.raw_data[0])
+        site_setting.default_file_location = 'local'
+        db.session.commit()
         flash(['Saved.', 'Success'], 'success')
         return redirect(url_for('main.site_setting'))
     return render_template('/setting/site.html',
-                           site_config=site_config,
+                           site_setting=site_setting,
                            form=form)
 
 

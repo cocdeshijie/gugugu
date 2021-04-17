@@ -27,17 +27,17 @@
                     {{ form.site_title(type='text',
                     class='form-control',
                     id='title',
-                    value=site_config['site_title']) }}
+                    value=site_setting.site_title) }}
                 </div>
                 <div class="form-group">
                     <label for="username">Site description</label>
                     {{ form.site_description(type='text',
                     class='form-control',
                     id='description',
-                    value=site_config['site_description']) }}
+                    value=site_setting.site_description) }}
                 </div>
                 <div class="custom-switch">
-                    {% if site_config['guest_upload'] %}
+                    {% if site_setting.guest_upload %}
                         {{ form.guest_upload(type='checkbox',
                         id='switch-upload',
                         checked='checked') }}
@@ -49,7 +49,7 @@
                     {% endif %}
                 </div>
                 <div class="custom-switch">
-                    {% if site_config['api'] %}
+                    {% if site_setting.api %}
                         {{ form.api(type='checkbox',
                         id='switch-api',
                         checked='checked') }}
