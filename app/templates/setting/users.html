@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row row-eq-spacing-lg">
-    <!-- Delete user submit -->
+    <!-- delete user submit -->
     {% for user in users %}
         {% if user.id != 1 %}
             <div class="modal" id="modal-{{ user.id }}" role="dialog">
@@ -27,6 +27,23 @@
         {% endif %}
     {% endfor %}
     <!-- end delete user submit -->
+    <!-- user info-->
+    {% for user in users %}
+        {% if user.id != 1 %}
+            <div class="modal" id="modal-0{{ user.id }}" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <p>Group: {{ user.group.name }}</p>
+                        <p>Username: {{ user.username }}</p>
+                        <p>Email: {{ user.email }}</p>
+                        <p>File upload count: {{ user.upload_count }}</p>
+                        <p>Space used: {{ user.space_used }} out of {{ user.group.space_limit }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <!-- end user info-->
     <div class="col-lg-4">
         <div class="card">
             <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Manage users</h2>
@@ -58,7 +75,7 @@
                                     <th>{{ user.group_name }}</th>
                                     <th>{{ user.space_used }} out of {{ user.max_space }}</th>
                                     <th class="text-left">
-                                             <a href="#modal-0{{ user.id }}" class="btn btn-secondary" role="button">⚙</a>
+                                             <a href="#modal-0{{ user.id }}" class="btn btn-secondary" role="button">📁</a>
                                     </th>
                                     <th class="text-left">
                                              <a href="#modal-{{ user.id }}" class="btn btn-danger" role="button">❌</a>

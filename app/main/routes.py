@@ -26,15 +26,11 @@ def account():
         if form.new_password.data:
             if not user.verify_password(form.old_password.data):
                 flash(['Wrong password.', 'Error'], 'danger')
-                return render_template('/setting/account.html',
-                                       current_user=current_user,
-                                       form=form)
+                return redirect(url_for('main.account'))
             user.password = form.new_password.data
         db.session.commit()
         flash(['Saved.', 'Success'], 'success')
-        return render_template('/setting/account.html',
-                               current_user=current_user,
-                               form=form)
+        return redirect(url_for('main.account'))
     return render_template('/setting/account.html',
                            current_user=current_user,
                            form=form)
@@ -110,7 +106,6 @@ def manage_group():
         db.session.commit()
         return redirect(url_for('main.manage_group'))
     return render_template('/setting/groups.html',
-                           current_user=current_user,
                            groups=groups,
                            delete_group_form=delete_group_form,
                            create_group_form=create_group_form,
@@ -133,9 +128,7 @@ def manage_user():
         return redirect(url_for('main.manage_user'))
     return render_template('/setting/users.html',
                            users=users,
-                           current_user=current_user,
                            delete_user_form=delete_user_form)
-
 
 
 @main.route('/documentation')
