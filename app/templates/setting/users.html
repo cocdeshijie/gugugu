@@ -1,6 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row row-eq-spacing-lg">
+    <!-- Delete user submit -->
+    {% for user in users %}
+        {% if user.id != 1 %}
+            <div class="modal" id="modal-{{ user.id }}" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <a href="#" class="close" role="button" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+                        <h5 class="modal-title">Delete user '{{ user.username }}'</h5>
+                        <p>
+                            Are you sure you want to delete user '{{ user.username }}'?
+                        </p>
+                        <form id="{{ user.id }}" action="{{ url_for('main.manage_user') }}" method="post">
+                            {{ delete_user_form.user_id(value=user.id) }}
+                        </form>
+                        <div class="text-right mt-20">
+                            <button onclick="location.href='#'" class="btn mr-5">Close</button>
+                            <button type="submit" class="btn btn-danger" form="{{ user.id }}">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <!-- end delete user submit -->
     <div class="col-lg-4">
         <div class="card">
             <h2 class="card-title"><i class="fas fa-user" aria-hidden="true"></i> Manage users</h2>
@@ -20,14 +46,24 @@
                             <th>Username</th>
                             <th>Group</th>
                             <th>Space used</th>
+                            <th>More info</th>
+                            <th>Delete user</th>
                         </tr>
                     </thead>
                     {% for user in users %}
                         <thead>
                             <tr>
-                                <th>{{ user.username }}</th>
-                                <th>{{ user.group_name }}</th>
-                                <th>{{ user.space_used }} out of {{ user.max_space }}</th>
+                                {% if user.id != 1 %}
+                                    <th>{{ user.username }}</th>
+                                    <th>{{ user.group_name }}</th>
+                                    <th>{{ user.space_used }} out of {{ user.max_space }}</th>
+                                    <th class="text-left">
+                                             <a href="#modal-0{{ user.id }}" class="btn btn-secondary" role="button">⚙</a>
+                                    </th>
+                                    <th class="text-left">
+                                             <a href="#modal-{{ user.id }}" class="btn btn-danger" role="button">❌</a>
+                                    </th>
+                                {% endif %}
                             </tr>
                         </thead>
                     {% endfor %}

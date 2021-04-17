@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
 from . import main
-from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm, ManageGroupForm, ManageSiteForm
+from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm, ManageGroupForm, ManageSiteForm, DeleteUserForm
 from ..models import Group, User
 from .. import db
 import json
@@ -44,6 +44,7 @@ def account():
 @login_required
 def site_setting():
     site_config = json.loads(open('./app/files/config.json', 'r').read())
+    #print(site_config['site_title'])
     form = ManageSiteForm()
     form.default_group.choices = [(group.id, group.name) for group in Group.query.all() if group.id != 1]
     form.default_group.default = site_config['default_group_id']
@@ -52,11 +53,11 @@ def site_setting():
         flash(['You don\'t have access to this page.', 'Error'], 'danger')
         return redirect(url_for('main.index'))
     if form.validate_on_submit():
-        with open('./app/files/config.json', 'w+') as f:
-            json.dump({'site_title': form.site_title.data,
-                       'site_description': form.site_description.data,
-                       'guest_upload': form.guest_upload.data,
-                       'api': form.api.data,
+        with open('./app/files/config.json', 'w') as f:
+            json.dump({'site_title': form.site_title.raw_data[0],
+                       'site_description': form.site_description.raw_data[0],
+                       'guest_upload': form.guest_upload.raw_data,
+                       'api': form.api.raw_data,
                        'default_group_id': int(form.default_group.raw_data[0]),
                        'default_file_location': 'local'
                        }, f)
@@ -125,9 +126,17 @@ def manage_user():
         flash(['You don\'t have access to this page.', 'Error'], 'danger')
         return redirect(url_for('main.index'))
     users = User.query.all()
+    delete_user_form = DeleteUserForm()
+    if delete_user_form.user_id.data and delete_user_form.validate_on_submit():
+        user = User.query.get(delete_user_form.user_id.data)
+        flash(['User {} deleted'.format(user.username), 'Deleted'], 'success')
+        db.session.delete(user)
+        db.session.commit()
+        return redirect(url_for('main.manage_user'))
     return render_template('/setting/users.html',
                            users=users,
-                           current_user=current_user)
+                           current_user=current_user,
+                           delete_user_form=delete_user_form)
 
 
 

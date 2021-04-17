@@ -64,4 +64,7 @@ class ManageSiteForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class DeleteUserForm(FlaskForm):
+    user_id = HiddenField()
+
 
