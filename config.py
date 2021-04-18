@@ -13,9 +13,9 @@ class Config():
 class DevelopmentConfig(Config):
     DEBUG=True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-                              'sqlite:///files/test.db'
+                              'sqlite:///static/db/test.db'
     WTF_CSRF_ENABLED = False
-    UPLOAD_FOLDER = './app/files'
+    UPLOAD_FOLDER = './app/static/files'
 
 config = {
     'default': DevelopmentConfig

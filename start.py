@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import Group, User, Upload, Test, SiteSetting
+from app.models import Group, User, Upload, SiteSetting
 from flask_migrate import Migrate
 
 app = create_app('default')

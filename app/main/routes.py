@@ -1,15 +1,36 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request, jsonify, send_from_directory
 from flask_login import login_required, current_user
 from . import main
 from.forms import DeleteGroupForm, CreateGroupForm, UserAccountForm, ManageGroupForm, ManageSiteForm, DeleteUserForm
-from ..models import Group, User, SiteSetting
+from ..models import Group, User, SiteSetting, Upload
 from .. import db
 import json
 
 
-@main.route('/')
+@main.route('/', methods=['POST', 'GET'])
 def index():
+    if request.method == 'POST':
+        if not current_user.is_authenticated and not SiteSetting.query.get(1).guest_upload:
+            return jsonify(error='Please login to upload files.')
+        if current_user.is_authenticated:
+            data = []
+            for file in request.files.getlist('files'):
+                upload = Upload(user_id=current_user.id)
+                data.append({'message': upload.put_file(file),
+                             'url': '{}{}'.format(request.host_url, upload.path)})
+                db.session.add(upload)
+                db.session.commit()
+            return jsonify(
+                code=200,
+                data=data
+            )
     return render_template('index.html')
+
+
+@main.route('/<path:path>')
+def static_file(path):
+    print(path)
+    return send_from_directory('static/files', filename=path)
 
 
 @main.route('/account', methods=['POST', 'GET'])

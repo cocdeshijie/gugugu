@@ -3,6 +3,8 @@ from flask_login import UserMixin
 from . import db, login_manager
 import bitmath
 import secrets
+from datetime import datetime
+import os
 
 
 class SiteSetting(db.Model):
@@ -14,6 +16,7 @@ class SiteSetting(db.Model):
     api = db.Column(db.Boolean, default=True)
     default_group_id = db.Column(db.Integer, default=2)
     default_file_location = db.Column(db.String, default='local')
+    file_count = db.Column(db.Integer, default=0)
 
 
 class Group(db.Model):
@@ -101,16 +104,40 @@ class Upload(db.Model):
     __tablename__ = 'uploads'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    original_name = db.Column(db.String)
+    name = db.Column(db.String)
     size = db.Column(db.Integer)
     path = db.Column(db.String)
     mime_type = db.Column(db.String)
-    date = db.Column(db.Date)
-    request_volume = db.Column(db.Integer)
-    password = db.Column(db.Boolean)
+    date = db.Column(db.Date, default=datetime.utcnow, nullable=False)
+    secret = db.Column(db.Boolean, default=False) # true = on
+    password = db.Column(db.String(128))
 
-class Test(db.Model):
-    __tablename__ = 'test'
-    id = db.Column(db.Integer, primary_key=True)
+    @property
+    def password(self):
+        raise AttributeError('Passwords are hashed.')
+
+    @password.setter
+    def password(self, password):
+        self.password = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def put_file(self, file):
+        self.mime_type = file.mimetype
+        self.original_name = file.filename
+        self.name = '{}.{}'.format(secrets.token_hex(8),
+                                   file.filename.split('.')[-1])
+        self.path = '{}'.format(self.name)
+        target = './app/static/files/{}'.format(self.path)
+        if not os.path.exists(os.path.dirname(target)):
+            os.makedirs(os.path.dirname(target))
+        file.save(target)
+        self.size = os.path.getsize(target)
+        return 'Success'
+
+
 
 
 @login_manager.user_loader
