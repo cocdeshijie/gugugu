@@ -10,7 +10,7 @@ class SiteSetting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     site_title = db.Column(db.String, default='placeholder')
     site_description = db.Column(db.String, default='placeholder')
-    guest_upload  = db.Column(db.Boolean, default=True)
+    guest_upload = db.Column(db.Boolean, default=True)
     api = db.Column(db.Boolean, default=True)
     default_group_id = db.Column(db.Integer, default=2)
     default_file_location = db.Column(db.String, default='local')

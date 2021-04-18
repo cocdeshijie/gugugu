@@ -12,6 +12,7 @@
             <p>Email: {{ current_user.email }}</p>
             <p>File upload count: {{ current_user.upload_count }}</p>
             <p>Space used: {{ current_user.space_used }} out of {{ current_user.group.space_limit }}</p>
+            <p>API key: {{ current_user.api_key }}</p>
             <div class="progress">
                 <div class="progress-bar" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
             </div>

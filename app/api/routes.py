@@ -1,13 +1,29 @@
-from flask import request, jsonify,url_for
+from flask import request, jsonify, url_for
 from . import api
+from ..models import User, SiteSetting
 import os
 import secrets
 
-api.root_path = './app/static/files'
 
-@api.route('/test')
-def test():
-    return api.root_path
+@api.route('/test/<string:api_key>', methods=['POST'])
+def test(api_key):
+    site_setting = SiteSetting.query.get(1)
+    if site_setting.api:
+        user = User.query.filter_by(api_key=api_key).first()
+        for file in request.files.getlist('files'):
+            print(file.filename)
+        data = [{"url": request.host_url+file.filename,
+                 } for file in request.files.getlist('files')]
+        return jsonify(
+            code=200,
+            data=data
+        )
+    else:
+        return jsonify(
+            code=500,
+            error='API is closed'
+        )
+
 
 @api.route('/upload', methods=['GET', 'POST'])
 def upload():
